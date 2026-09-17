@@ -1,0 +1,25 @@
+# 특허 RAG 시스템 의존성
+# 설치: pip install -r requirements.txt
+# LangChain 1.0 에서 제거된 API(create_openai_tools_agent, LocalFileStore, SelfQueryRetriever)를
+# 사용하므로 0.3.x 대로 고정한다.
+
+# --- LangChain ---
+langchain>=0.3,<0.4
+langchain-core>=0.3,<0.4
+langchain-community>=0.3,<0.4
+langchain-openai>=0.2,<0.4
+langchain-chroma>=0.1.4,<0.3
+langchain-huggingface>=0.1,<0.2
+langchain-text-splitters>=0.3,<0.4
+lark>=1.1,<2                  # Self-Query Retriever 필터 파서
+
+# --- 임베딩 ---
+sentence-transformers>=3.0,<4
+
+# --- 데이터 / 설정 ---
+pandas>=2.0,<3
+openpyxl>=3.1,<4
+python-dotenv>=1.0,<2
+
+# --- 노트북 전용 (선택) ---
+# langchain-teddynote>=0.3,<0.4

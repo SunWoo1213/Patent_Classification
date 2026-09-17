@@ -1,0 +1,28 @@
+#!/bin/sh
+# 커밋 전에 API 키 / .env 파일이 스테이징되었는지 검사한다.
+# 활성화: git config core.hooksPath .githooks
+
+fail=0
+
+# 1) 금지된 파일
+blocked=$(git diff --cached --name-only --diff-filter=ACMR | grep -E '(^|/)\.env($|\.)' | grep -v '\.env\.example$')
+if [ -n "$blocked" ]; then
+  echo "[pre-commit] 비밀 파일은 커밋할 수 없습니다:"
+  echo "$blocked"
+  fail=1
+fi
+
+# 2) 추가된 줄에서 키 패턴 검사
+pattern='(sk-(proj-)?[A-Za-z0-9_-]{20,}|tvly-[A-Za-z0-9]{20,}|hf_[A-Za-z0-9]{30,}|AKIA[0-9A-Z]{16}|ghp_[A-Za-z0-9]{36}|-----BEGIN [A-Z ]*PRIVATE KEY-----)'
+hits=$(git diff --cached -U0 --diff-filter=ACMR | grep '^+' | grep -v '^+++' | grep -En "$pattern")
+if [ -n "$hits" ]; then
+  echo "[pre-commit] API 키로 보이는 문자열이 있습니다:"
+  echo "$hits" | cut -c1-120
+  fail=1
+fi
+
+if [ $fail -ne 0 ]; then
+  echo "[pre-commit] 커밋이 중단되었습니다. 오탐이라면 git commit --no-verify 로 우회할 수 있습니다."
+  exit 1
+fi
+exit 0

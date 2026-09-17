@@ -1,0 +1,53 @@
+# ===== 비밀 정보 =====
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+credentials*.json
+service_account*.json
+secrets/
+
+# ===== 데이터 / 산출물 (대회 데이터는 재배포 금지) =====
+data/
+store/
+*.xlsx
+*.xls
+*.csv
+*.pickle
+*.pkl
+chroma*/
+*.sqlite3
+
+# ===== Python =====
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.venv/
+venv/
+env/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# ===== Jupyter =====
+.ipynb_checkpoints/
+
+# ===== IDE / OS =====
+.vscode/
+.idea/
+.claude/
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ===== 추가 비밀 정보 =====
+*.jks
+*.pfx
+id_rsa*
+id_ed25519*
+.netrc
+.pypirc
