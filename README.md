@@ -13,7 +13,7 @@
 
 ## 한눈에 보기
 
-| | |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | |
 |---|---|
 | **무엇** | 특허 3,006건(22개 컬럼)을 벡터DB에 넣고, 질문 의도에 따라 **기존 특허 조회**와 **새 발명의 IPC 코드 생성**을 하나의 질의 함수로 처리하는 RAG |
 | **내 역할** | 팀 프로젝트 중 **검색 · 생성 로직 코드 전체** (Retriever 3종, Self-Query 메타데이터 설계, LLM 라우터 체인) |
@@ -24,10 +24,10 @@
 
 ## 👥 역할 분담
 
-| 담당 | 내용 |
+| 담당| 내용 |
 |---|---|
 | 팀원 | 데이터 라벨링 · 데이터 이해(파악) |
-| **본인** | 그 외 로직 코드 전체 — Retriever 3종 설계·구현, Self-Query 메타데이터 설계, LLM 라우터 체인, RAG 파이프라인 전체 |
+| **본인**<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | 그 외 로직 코드 전체 — Retriever 3종 설계·구현, Self-Query 메타데이터 설계, LLM 라우터 체인, RAG 파이프라인 전체 |
 
 > 이 저장소의 노트북(`RAG_Modeling.ipynb`)은 본인이 담당한 RAG 파이프라인 부분입니다.
 
@@ -40,10 +40,10 @@
 
 이 프로젝트에서는 이 문제를 풀기 위해 **세 가지 Retriever 전략을 직접 구현하고, 같은 테스트 질의로 비교**했습니다. 그다음 IPC 정확 일치 검색이 가장 안정적이었던 전략에 **LLM 라우터 체인**을 붙여 사용자의 질문 의도에 따라 동작이 나뉘도록 했습니다.
 
-| 사용자 의도 | 처리 방식 |
+| 사용자 의도| 처리 방식 |
 |---|---|
 | 🔍 **기존 특허 조회** (내용·IPC·출원인 등) | 벡터DB에서 검색한 뒤 정해진 양식으로 정리 |
-| ✨ **신규 IPC 코드 생성** (발명 내용 입력) | LLM이 중요도 순으로 IPC 코드, 한글 분류명, 부여 사유 생성 |
+| ✨ **신규 IPC 코드 생성** (발명 내용 입력)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | LLM이 중요도 순으로 IPC 코드, 한글 분류명, 부여 사유 생성 |
 | 💬 **그 외 일반 질문** | 기본 LLM 체인으로 응답 |
 
 ---
@@ -85,10 +85,10 @@ flowchart TD
 
 ## 🔧 기술 스택
 
-| 구분 | 사용 기술 |
+| 구분| 사용 기술 |
 |---|---|
 | **LLM** | OpenAI `gpt-4-turbo-preview` (Agent·Self-Query·Router·생성), `gpt-4o-mini` (문서 요약) |
-| **임베딩** | `jhgan/ko-sroberta-multitask` (KorNLU 학습 한국어 모델, 최종 사용), `text-embedding-3-large` (교체 가능하도록 구성) |
+| **임베딩**<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | `jhgan/ko-sroberta-multitask` (KorNLU 학습 한국어 모델, 최종 사용), `text-embedding-3-large` (교체 가능하도록 구성) |
 | **프레임워크** | LangChain 0.3 (LCEL, Agents, Retrievers, RunnableBranch) |
 | **Vector DB** | ChromaDB (디스크에 영구 저장) |
 | **Doc Store** | `LocalFileStore` (Multi-Vector의 부모 문서 저장) |
@@ -137,9 +137,9 @@ retriever03 = SelfQueryRetriever.from_llm(
 #### 비교 방법과 선택 이유
 세 방법에 **같은 테스트 질의 세트**를 넣고 반환 문서를 직접 확인해 비교했습니다. **정량 지표(Hit Rate 등)는 사용하지 않은 정성 비교**입니다.
 
-| 테스트 질의 유형 | 예시 |
+| 테스트 질의 유형| 예시 |
 |---|---|
-| 전체 IPC 정확 일치 | `전체 IPC 가 G16H-010/60,[G06Q-010/10, G16H-010/20, G16H-080/00] 와 정확히 일치하는 특허` |
+| 전체 IPC 정확 일치<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | `전체 IPC 가 G16H-010/60,[G06Q-010/10, G16H-010/20, G16H-080/00] 와 정확히 일치하는 특허` |
 | 긴 IPC 문자열 조회 | `G16H-050/20,[A61B-005/00, ...]` 인 정보를 알려줘 |
 | 발명 설명문 유사 검색 | 유해인자·질병위험도 예측, 기능성 위장관질환 음식 조절 서비스 설명문 |
 | 메타 조건 검색 | `메인IPC2 G06Q 인 특허 1개`, 출원인 지정 검색 |
