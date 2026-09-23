@@ -16,6 +16,7 @@
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | |
 |---|---|
 | **무엇** | 특허 3,006건(22개 컬럼)을 벡터DB에 넣고, 질문 의도에 따라 **기존 특허 조회**와 **새 발명의 IPC 코드 생성**을 하나의 질의 함수로 처리하는 RAG |
+| **기간** | 2024.09 ~ 2024.11 (저장소 커밋 날짜는 이후 업로드 시점) |
 | **내 역할** | 팀 프로젝트 중 **검색 · 생성 로직 코드 전체** (Retriever 3종, Self-Query 메타데이터 설계, LLM 라우터 체인) |
 | **핵심 결정** | IPC 코드 · 출원번호처럼 정확히 일치해야 하는 값은 임베딩 유사도로 찾기 어렵다 → **메타데이터 필터 문제로 바꿔** Self-Query Retriever 채택 |
 | **결과** | DS학술제 모델링 경진대회 장려상. Retriever 비교는 같은 질의 세트로 한 정성 비교이고 정량 지표는 없다 |
@@ -245,14 +246,14 @@ IPC : G06Q 50/22   한글코드 : 건강관리 서비스
 | 한국어 특허 문서의 **임베딩 품질** | 임베딩 모델을 교체 가능하게 구성하고, 한국어 NLU 데이터로 학습한 `ko-sroberta-multitask`를 사용 |
 | Agent는 도구 사용 여부를 LLM이 정해 **조회·생성 경로가 일정하지 않음** | 프롬프트를 2차에 걸쳐 다듬은 뒤, 최종적으로 LLM Router + `RunnableBranch`로 의도별 체인을 결정적으로 분기 |
 | 벡터DB·요약을 매번 새로 만들면 **시간과 API 비용**이 큼 | 방법별 저장 경로를 나눠 Google Drive에 영구 저장하고, 저장본이 있으면 생성 셀("SKIP" 표시)을 건너뛰고 불러오기만 실행 |
-| LLM이 없는 정보를 지어내는 **환각** | 출력 양식을 고정하고, 추출하지 못한 항목은 `검색불가`로 표시하도록 프롬프트에 명시 (한계는 아래 참고) |
+| LLM이 없는 정보를 지어내는 **환각** | 출력 양식을 고정하고, 추출하지 못한 항목은 `검색불가`로 표시하도록 프롬프트에 명시 |
 
 ### 검토했으나 채택하지 않은 것
 
 | 대상 | 내용 | 결과 |
 |---|---|---|
 | `ParentDocumentRetriever` | 부모/자식 분할을 자동으로 해 주는 Retriever | 청크에 메타 문자열을 직접 붙이기 위해 `MultiVectorRetriever`로 직접 구성 |
-| `EnsembleRetriever`, `MultiQueryRetriever` | 여러 Retriever 결합 / 질의 다변화 | 불러오기까지만 하고 미적용 (향후 Hybrid Search 과제로 남김) |
+| `EnsembleRetriever`, `MultiQueryRetriever` | 여러 Retriever 결합 / 질의 다변화 | 불러오기까지만 하고 미적용 |
 | `LLMChainFilter`, `LLMChainExtractor` | 검색 결과 압축·필터링 | 불러오기까지만 하고 미적용 |
 | Tavily 웹 검색 도구 | 저장소에 없는 특허를 웹에서 보완 검색 | 도구는 만들었으나 Agent에 연결하지 않음 (참고 코드) |
 | `text-embedding-3-large` | OpenAI 임베딩 | 교체 가능하게 구성했으나 최종 벡터DB는 ko-sroberta로 생성 |
