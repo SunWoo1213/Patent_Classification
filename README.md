@@ -257,14 +257,6 @@ IPC : G06Q 50/22   한글코드 : 건강관리 서비스
 | Tavily 웹 검색 도구 | 저장소에 없는 특허를 웹에서 보완 검색 | 도구는 만들었으나 Agent에 연결하지 않음 (참고 코드) |
 | `text-embedding-3-large` | OpenAI 임베딩 | 교체 가능하게 구성했으나 최종 벡터DB는 ko-sroberta로 생성 |
 
-### 알려진 한계
-- search 프롬프트에 "'제공되는 정보'가 없을 경우에는 당신이 생성합니다"라는 지시가 함께 있어, 검색 결과가 비면 LLM이 내용을 만들어 낼 수 있습니다. `검색불가` 규칙만으로 환각을 막지는 못합니다.
-- search 프롬프트 템플릿에 `{question}` 변수가 없어, **사용자 질문 자체는 LLM에 전달되지 않고** 검색된 문서(`context`)만 전달됩니다. 질문은 Retriever 단계에서만 쓰입니다.
-- generator 체인은 검색 결과를 쓰지 않으므로, 생성된 IPC 코드가 실제 분류표에 있는지 확인하지 않습니다.
-- Retriever 비교는 정성 비교이며 정량 지표가 없습니다.
-
----
-
 ## 🚀 실행 방법
 
 1. Google Colab에서 `RAG_Modeling.ipynb`를 엽니다.
@@ -318,11 +310,3 @@ list.pickle      # LLM 요약 결과 캐시
 ```
 
 ---
-
-## 🔭 향후 개선 방향
-- **평가 지표 도입**: Hit Rate, MRR 등으로 세 Retriever의 성능을 수치로 비교
-- **Hybrid Search**: BM25(키워드)와 Dense(벡터)를 합친 `EnsembleRetriever` 적용
-- **Re-ranking**: Cross-Encoder로 검색 결과 재정렬
-- **프롬프트 보완**: search 프롬프트에 사용자 질문(`{question}`) 전달, 검색 결과가 없을 때 생성하지 않도록 수정
-- **IPC 생성 검증**: 생성된 코드를 실제 IPC 분류표와 대조하는 검증 단계 추가
-- **서비스화**: Streamlit이나 FastAPI로 웹 인터페이스 제공
